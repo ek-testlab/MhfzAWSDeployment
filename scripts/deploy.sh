@@ -11,9 +11,9 @@ git checkout 531b3d2fa6af9b102f775d1630360605abc0ac67
 
 echo "=== Configuring Erupe ==="
 # Replace their server image with my own
-echo "=== Replacing local build in docker compose with prebuilt image ==="
-sed -i '/^    build:$/,+1c\
-    image: anononetwothree/mhfz-erupe:stable' ~/mhfz/erupe/docker/docker-compose.yml
+echo "=== Replacing Erupe Docker Compose configuration ==="
+cp /opt/mhfz-deployment/docker/docker-compose.yml \
+   ~/mhfz/erupe/docker/docker-compose.yml
 
 echo "=== Replacing sql file in init script ==="
 cp /opt/mhfz-deployment/db/init.sql ~/mhfz/erupe/schemas/init.sql
