@@ -8,19 +8,27 @@ Parameters:
   DebianAMI:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/debian/release/13/latest/amd64
-    Description: Name of the image used for the deployment
+    Description: Name of the image used for the deployment.
+
+  InstanceType:
+    Type: String
+    Default: t3.small
+    Description: EC2 instance type. t3.micro or t3.small recommended.
+
   MhfzDataBucketName:
     Type: String
     Default: my-mhfz-server-data
-    Description: Name of the bucket that hosts the server's binaries and the serverless webapp
+    Description: Name of the bucket that hosts the server's binaries and the serverless webapp.
+  
   AdminIp:
     Type: String
-    Description: IP address allowed to access SSH
+    Description: IP address allowed to access SSH.
+  
   KeyPairName:
     Type: String
     Default: MhfzKeyPair
-    Description: Name of the key pair in AWS used for SSH
-
+    Description: Name of the key pair in AWS used for SSH.
+  
 Resources:
   # 1. VPC
   MhfzVPC:
@@ -123,7 +131,7 @@ Resources:
   MhfzServer: 
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t3.small
+      InstanceType: !Ref InstanceType
       ImageId: !Ref DebianAMI
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
