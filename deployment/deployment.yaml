@@ -29,12 +29,22 @@ Parameters:
     Default: MhfzKeyPair
     Description: Name of the key pair in AWS used for SSH.
   
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+    Description: CIDR block of the VPC.
+
+  SubnetCidr:
+    Type: String
+    Default: 10.0.1.0/24
+    Description: CIDR block of the public subnet.
+  
 Resources:
   # 1. VPC
   MhfzVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: !Ref VpcCidr
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
@@ -61,7 +71,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MhfzVPC
-      CidrBlock: 10.0.1.0/24
+      CidrBlock: !Ref SubnetCidr
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name

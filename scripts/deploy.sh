@@ -10,7 +10,7 @@ cd ~/mhfz/erupe
 git checkout 531b3d2fa6af9b102f775d1630360605abc0ac67
 
 echo "=== Configuring Erupe ==="
-# Replace their server image with my own
+
 echo "=== Replacing Erupe Docker Compose configuration ==="
 cp /opt/mhfz-deployment/docker/docker-compose.yml \
    ~/mhfz/erupe/docker/docker-compose.yml
