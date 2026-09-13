@@ -1,0 +1,33 @@
+.button-row {
+display: flex;
+gap: 20px;
+margin-bottom: 40px;
+}
+
+.button-row button {
+flex: 1;
+}
+
+.server-status {
+text-align: center;
+}
+
+.status-indicator {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+margin-bottom: 30px;
+}
+
+#status-square {
+width: 20px;
+height: 20px;
+display: inline-block;
+background-color: gray;
+}
+
+#server-ip {
+font-size: 24px;
+font-weight: bold;
+}

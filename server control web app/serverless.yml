@@ -1,0 +1,194 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Serverless infrastructure for the MHFZ website
+
+Parameters:
+  WebsiteBucketName:
+    Type: String
+    Default: my-mhfz-server-data
+    Description: Name of the existing S3 bucket hosting the webapp.
+
+  MhfzInstanceId:
+    Type: AWS::EC2::Instance::Id
+    Default: i-0596c2ecb4a1d3e04
+    Description: ID of the MHFZ EC2 Instance.
+
+Resources:
+  # Lambda execution role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+      Policies:
+        - PolicyName: MhfzEC2Control
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:StartInstances
+                  - ec2:StopInstances
+                Resource:
+                  - !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/${MhfzInstanceId}'
+
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeInstances
+                Resource: '*'
+
+  # Lambda function
+  WebsiteLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.13
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+
+      Environment:
+        Variables:
+          INSTANCE_ID: !Ref MhfzInstanceId
+
+      Code:
+        ZipFile: |
+          import boto3
+          import os
+          import json
+
+          ec2 = boto3.client("ec2")
+          INSTANCE_ID = os.environ["INSTANCE_ID"]
+
+          def start_server():
+              ec2.start_instances(
+                  InstanceIds=[INSTANCE_ID]
+              )
+
+          def stop_server():
+              ec2.stop_instances(
+                  InstanceIds=[INSTANCE_ID]
+              )
+
+          def get_server_ip():
+              response = ec2.describe_instances(
+                  InstanceIds=[INSTANCE_ID]
+              )
+
+              instance = response["Reservations"][0]["Instances"][0]
+
+              return instance.get("PublicIpAddress")
+
+          def lambda_handler(event, context):
+
+              method = event.get("requestContext", {}) \
+                            .get("http", {}) \
+                            .get("method", "GET")
+
+              query = event.get("queryStringParameters") or {}
+              action = query.get("action")
+
+              if action == "start":
+                  start_server()
+
+                  return {
+                      "statusCode": 200,
+                      "headers": {
+                          "Content-Type": "application/json"
+                      },
+                      "body": json.dumps({
+                          "message": "Server starting"
+                      })
+                  }
+
+              elif action == "stop":
+                  stop_server()
+
+                  return {
+                      "statusCode": 200,
+                      "headers": {
+                          "Content-Type": "application/json"
+                      },
+                      "body": json.dumps({
+                          "message": "Server stopping"
+                      })
+                  }
+
+              elif action == "ip":
+                  ip = get_server_ip()
+
+                  return {
+                      "statusCode": 200,
+                      "headers": {
+                          "Content-Type": "application/json"
+                      },
+                      "body": json.dumps({
+                          "ip": ip
+                      })
+                  }
+
+              return {
+                  "statusCode": 400,
+                  "body": json.dumps({
+                      "error": "Invalid action"
+                  })
+              }
+
+  # Lambda Function URL
+  WebsiteLambdaUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !Ref WebsiteLambda
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+
+  # Lambda Function URL permission
+  WebsiteLambdaUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WebsiteLambda
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+  
+  WebsiteLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WebsiteLambda
+      Action: lambda:InvokeFunction
+      Principal: "*"
+      InvokedViaFunctionUrl: true
+
+  # S3 bucket policy
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucketName
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicRead
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:GetObject
+            Resource: !Sub 'arn:aws:s3:::${WebsiteBucketName}/*'
+
+Outputs:
+  LambdaUrl:
+    Description: Lambda Function URL
+    Value: !GetAtt WebsiteLambdaUrl.FunctionUrl
