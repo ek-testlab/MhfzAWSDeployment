@@ -40,7 +40,7 @@ Navigate to **CloudFormation** and create a new stack using the `server_deployme
 
 __Optional__
 
-You can optionally deploy the `server_control/serverless.yml` template as a separate stack. This deploys a serverless web application that allows anyone with access to the Lambda URL to start or stop the server, helping reduce costs by keeping the EC2 instance running only when needed.
+You can optionally deploy the `server_control/serverless.yml` template as a separate stack. This deploys a serverless web application for starting and stopping the server, helping reduce costs by keeping the EC2 instance running only when needed. The application is accessible through the **S3 static website URL**.
 
 ![Serverless Web App](docs/webapp_interface.jpg)
 
