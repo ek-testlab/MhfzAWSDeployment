@@ -15,16 +15,16 @@ You need an AWS account with billing information configured. While cost minimiza
 
 ### Prerequisites
 
-A S3 bucket with the server's binaries is required to be set up beforehand. You can use the following command after setting your desired region.
-* AWS cli
+An S3 bucket containing the server binaries must be created before deploying the infrastructure. After configuring your desired AWS region, you can create the bucket using the following AWS CLI command:
   ```sh
   aws s3 mb s3://YOUR-BUCKET-NAME --region $(aws configure get region)
   ```
-Before uploading the archive you need to rename it to 'MHFZbinaries.7z'
-Afterwards you can upload the archive containing the binaries to the bucket.
-It is important that the chosen bucket name matches the bucket referenced in deploy.sh.
+Before uploading the archive, rename it to `MHFZbinaries.7z`.
 
-Your final bucket structure should look as follows:
+The chosen bucket name must match the `MhfzDataBucketName` parameter provided when deploying the CloudFormation stack.
+
+
+Your current bucket structure should look like this:
   ```text
   YOUR-BUCKET-NAME/
   └── MHFZbinaries.7z
@@ -35,16 +35,26 @@ Your final bucket structure should look as follows:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Navigate to Cloudformation and create a new stack with the deployment.yaml template in your desired region.
+Navigate to **CloudFormation** and create a new stack using the `server_deployment/deployment.yaml` template. Make sure to deploy the stack in the **same AWS Region as your previously created S3 bucket**.
+
 
 __Optional__
 
-Since cost savings are one of the main goals of this template, you can optionally deploy the serverless.yml template as a separate stack.
+You can optionally deploy the `server_control/serverless.yml` template as a separate stack. This deploys a serverless web application that allows anyone with access to the Lambda URL to start or stop the server, helping reduce costs by keeping the EC2 instance running only when needed.
 
-1. Create a separate CloudFormation stack using serverless.yml in the same AWS Region as your server.
-2. Copy the URL from the stack's Outputs and add it to the serverless.js file.
-3. Upload the contents of the serverless_frontend folder to the same S3 bucket specified in the prerequisites.
-Make sure Static website hosting is enabled for the S3 bucket.
+1. Deploy a separate CloudFormation stack using `server_control/serverless.yml` in the same AWS Region as your server.
+2. Download the contents of `server_control/serverless_frontend` from this repository.
+3. Copy the URL from the stack's **Outputs** and replace `YOUR-LAMBDA-URL` in `serverless.js` with the provided URL.
+4. Upload the contents of the serverless_frontend folder to the same S3 bucket specified in the prerequisites.
+5. Make sure **Static website hosting** is enabled for the S3 bucket.
+Your final bucket structure should look like this:
+  ```text
+  YOUR-BUCKET-NAME/
+  └── MHFZbinaries.7z
+  └── index.html
+  └── main.css
+  └── serverless.js
+  ```
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
