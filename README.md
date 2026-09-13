@@ -1,15 +1,17 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This repository provides an easy-to-use template and framework for deploying a containerized Monster Hunter Frontier Server on AWS Infrastructure in a single deployment, even for users with limited AWS experience.
-The deployment tries to stay as close to the free tier as possible while providing a stable deployment.
+This repository provides an easy-to-use template and framework for deploying Erupe, an open-source server emulator for Monster Hunter Frontier, on AWS in a single deployment. It also includes an optional serverless web app for controlling the server.
+
+### Architecture
+![AWS Architecture](architecture%20diagram.svg)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-You need an AWS account with linked billing information.
+You need an AWS account with billing information configured. While cost minimization is one of the goals of this deployment, it will still incur AWS charges, primarily for the time the EC2 instance is running.
 
 ### Prerequisites
 

@@ -173,7 +173,7 @@ Resources:
           chmod +x /opt/mhfz-deployment/scripts/bootstrap.sh
 
           echo "=== Executing bootstrap script ==="
-          /opt/mhfz-deployment/scripts/bootstrap.sh
+          /opt/mhfz-deployment/scripts/bootstrap.sh "${MhfzDataBucketName}"
 
           echo "=== MHFZ UserData completed successfully ==="
           date

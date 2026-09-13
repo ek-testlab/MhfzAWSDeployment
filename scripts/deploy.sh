@@ -36,7 +36,8 @@ echo "== Configuration successful ==="
 
 echo "=== Extracting MHFZ binaries ==="
 # Download the permanent game binaries from S3
-aws s3 cp s3://my-mhfz-server-data/MHFZbinaries.7z /tmp/
+MHFZ_DATA_BUCKET="$1"
+aws s3 cp s3://${MHFZ_DATA_BUCKET}/MHFZbinaries.7z /tmp/
 7z x /tmp/MHFZbinaries.7z \
   -o/home/admin/mhfz/erupe/docker/
 # Cleanup

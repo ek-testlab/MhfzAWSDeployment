@@ -1,5 +1,5 @@
 
-const LAMBDA_URL = 'https://xdl2kq7y2lnlfs6v2qfqkrjbwu0eypcq.lambda-url.eu-west-1.on.aws/';
+const LAMBDA_URL = 'YOUR-LAMBDA-URL';
 // if correct it should be similar to https://somethingsomething.execute-api.us-east-1.amazonaws.com/prod/petcuddleotron
 
 async function getServerStatus() {
