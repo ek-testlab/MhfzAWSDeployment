@@ -4,7 +4,7 @@
 This repository provides an easy-to-use template and framework for deploying Erupe, an open-source server emulator for Monster Hunter Frontier, on AWS in a single deployment. It also includes an optional serverless web app for controlling the server.
 
 ### Architecture
-![AWS Architecture](architecture%20diagram.svg)
+![AWS Architecture](docs/architecture_diagram.svg)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -42,6 +42,10 @@ __Optional__
 
 You can optionally deploy the `server_control/serverless.yml` template as a separate stack. This deploys a serverless web application that allows anyone with access to the Lambda URL to start or stop the server, helping reduce costs by keeping the EC2 instance running only when needed.
 
+![Serverless Web App](docs/webapp_interface.jpg)
+
+To deploy the serverless web app:
+
 1. Deploy a separate CloudFormation stack using `server_control/serverless.yml` in the same AWS Region as your server.
 2. Download the contents of `server_control/serverless_frontend` from this repository.
 3. Copy the URL from the stack's **Outputs** and replace `YOUR-LAMBDA-URL` in `serverless.js` with the provided URL.
@@ -56,7 +60,7 @@ Your final bucket structure should look like this:
   └── serverless.js
   ```
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+<!--_For more examples, please refer to the [Documentation](https://example.com)_-->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -67,7 +71,3 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 * [GitHub README Template](https://github.com/othneildrew/Best-README-Template)
 * [Erupe Server Emulator Project](https://github.com/Mezeporta/Erupe/tree/531b3d2fa6af9b102f775d1630360605abc0ac67)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
