@@ -4,7 +4,7 @@
 This repository provides an easy-to-use template and framework for deploying Erupe, an open-source server emulator for Monster Hunter Frontier, on AWS in a single deployment. It also includes an optional serverless web app for controlling the server.
 
 ### Architecture
-![AWS Architecture](docs/architecture_diagram.svg)
+![AWS Architecture](docs/architecture_diagram.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -45,7 +45,6 @@ You can optionally deploy the `server_control/serverless.yml` template as a sepa
 ![Serverless Web App](docs/webapp_interface.jpg)
 
 To deploy the serverless web app:
-
 1. Deploy a separate CloudFormation stack using `server_control/serverless.yml` in the same AWS Region as your server.
 2. Download the contents of `server_control/serverless_frontend` from this repository.
 3. Copy the URL from the stack's **Outputs** and replace `YOUR-LAMBDA-URL` in `serverless.js` with the provided URL.
