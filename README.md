@@ -15,7 +15,7 @@ You need an AWS account with billing information configured. While cost minimiza
 
 ### Prerequisites
 
-An S3 bucket containing the server binaries must be created before deploying the infrastructure. After configuring your desired AWS region, you can create the bucket using the following AWS CLI command:
+An S3 bucket containing the server binaries must be created before deploying the infrastructure. After configuring your desired AWS region, you can create the bucket using the following AWS CLI command, replacing `YOUR-BUCKET-NAME` with your desired bucket name:
   ```sh
   aws s3 mb s3://YOUR-BUCKET-NAME --region $(aws configure get region)
   ```
@@ -30,6 +30,18 @@ Your current bucket structure should look like this:
   └── MHFZbinaries.7z
   ```
 
+You should also create an **EC2 key pair** in AWS so you can access the EC2 instance via SSH for troubleshooting or updating the server configuration file.
+
+Create a key pair using the following command, replacing `YOUR-KEY-NAME` with your desired key pair name:
+  ```sh
+  aws ec2 create-key-pair \ 
+    --key-name YOUR-KEY-NAME \
+    --query 'KeyMaterial' \
+    --output text \
+    --region $(aws configure get region) \
+    > YOUR-KEY-NAME.pem
+  ```
+You need to download the private key afterwards from the **CloudShell** environment.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -37,6 +49,7 @@ Your current bucket structure should look like this:
 
 Navigate to **CloudFormation** and create a new stack using the `server_deployment/deployment.yaml` template. Make sure to deploy the stack in the **same AWS Region as your previously created S3 bucket**.
 
+When making updates to the `config.json` for the Server make sure that the first key is always `"Host"`.
 
 __Optional__
 
@@ -69,4 +82,5 @@ Your final bucket structure should look like this:
 * [Serverless Webapp Template and Instructions](https://github.com/acantril/learn-cantrill-io-labs/tree/master/aws-serverless-pet-cuddle-o-tron)
 * [GitHub README Template](https://github.com/othneildrew/Best-README-Template)
 * [Erupe Server Emulator Project](https://github.com/Mezeporta/Erupe/tree/531b3d2fa6af9b102f775d1630360605abc0ac67)
+* [Infrastructure Diagram made with Cloudcraft](https://www.cloudcraft.co/)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
