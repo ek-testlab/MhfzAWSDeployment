@@ -1,8 +1,6 @@
 #!/bin/bash -xe
 exec > >(tee -a /var/log/mhfz-bootstrap.log | logger -t mhfz-bootstrap -s 2>/dev/console) 2>&1
 
-MHFZ_DATA_BUCKET="$1"
-
 echo "=== Bootstrap started ==="
 date
 apt-get update
@@ -46,7 +44,7 @@ chmod +x /opt/mhfz-deployment/scripts/*.sh
 
 echo "=== Starting deployment ==="
 sudo -u admin sg docker -c \
-  "/opt/mhfz-deployment/scripts/deploy.sh 'MHFZ_DATA_BUCKET'"
+  "/opt/mhfz-deployment/scripts/deploy.sh '$1'"
 
 echo "=== Bootstrap completed successfully ==="
 date
