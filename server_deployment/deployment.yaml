@@ -168,7 +168,7 @@ Resources:
           apt-get install -y git
           
           echo "=== Cloning project repository ==="
-          git clone --branch dev https://github.com/ek-testlab/MhfzAWSDeployment.git /opt/mhfz-deployment
+          git clone https://github.com/ek-testlab/MhfzAWSDeployment.git /opt/mhfz-deployment
 
           chmod +x /opt/mhfz-deployment/scripts/bootstrap.sh
 
