@@ -1,0 +1,28 @@
+- name: Update Server configuration file
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Write the Erupe config file
+      ansible.builtin.copy:
+        src: ../config/config.json
+        dest: /home/admin/mhfz/erupe/docker/config.json
+
+    - name: Update public IPv4 in config file
+      ansible.builtin.command:
+        cmd: /opt/mhfz-deployment/scripts/update-ip.sh
+      become: false
+      notify: Restart Erupe
+
+    - name: Ensure Erupe is running
+      community.docker.docker_compose_v2:
+        project_src: /home/admin/mhfz/erupe/docker
+        state: present
+
+  handlers:
+    - name: Restart Erupe
+      community.docker.docker_compose_v2:
+        project_src: /home/admin/mhfz/erupe/docker
+        services:
+          - server
+        state: restarted

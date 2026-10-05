@@ -153,7 +153,9 @@ Resources:
       SecurityGroupIds:
         - !Ref MhfzSecurityGroup
       KeyName: !Ref KeyPairName
-      
+      Tags:
+        - Key: Name
+          Value: MHFZ-Server
       IamInstanceProfile: !Ref MhfzInstanceProfile
 
       UserData:

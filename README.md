@@ -47,7 +47,7 @@ You need to download the private key afterwards from the **CloudShell** environm
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Navigate to **CloudFormation** and create a new stack using the `server_deployment/deployment.yaml` template. Make sure to deploy the stack in the **same AWS Region as your previously created S3 bucket**.
+Navigate to **CloudFormation** and create a new stack using the `server_deployment/deployment.yml` template. Make sure to deploy the stack in the **same AWS Region as your previously created S3 bucket**.
 
 When making updates to the `config.json` for the Server make sure that the first key is always `"Host"`.
 

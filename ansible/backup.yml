@@ -1,0 +1,77 @@
+---
+- name: Create backup of character and player data
+  hosts: all
+  become: true
+
+  vars:
+    compose_dir: /home/admin/mhfz/erupe/docker
+    backup_dir: /home/admin/mhfz-backups
+    s3_bucket: my-mhfz-server-data
+
+  tasks:
+    - name: Ensure PostgreSQL is running
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_dir }}"
+        services:
+          - db
+        state: present
+
+    - name: Create backup directory
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        owner: admin
+        group: admin
+        mode: "0700"
+
+    - name: Dump users table
+      ansible.builtin.command:
+        cmd: >
+          docker compose exec -T db
+          pg_dump
+          -U postgres
+          -d erupe
+          -Fc
+          -t users
+          -f /tmp/users.dump
+      args:
+        chdir: "{{ compose_dir }}"
+
+    - name: Copy users dump out of database container
+      ansible.builtin.command:
+        cmd: >
+          docker cp
+          $(docker compose ps -q db):/tmp/users.dump
+          {{ backup_dir }}/users.dump
+      args:
+        chdir: "{{ compose_dir }}"
+
+    - name: Dump characters table
+      ansible.builtin.command:
+        cmd: >
+          docker compose exec -T db
+          pg_dump
+          -U postgres
+          -d erupe
+          -Fc
+          -t characters
+          -f /tmp/characters.dump
+      args:
+        chdir: "{{ compose_dir }}"
+
+    - name: Copy characters dump out of database container
+      ansible.builtin.command:
+        cmd: >
+          docker cp
+          $(docker compose ps -q db):/tmp/characters.dump
+          {{ backup_dir }}/characters.dump
+      args:
+        chdir: "{{ compose_dir }}"
+
+    - name: Upload to S3
+      ansible.builtin.command:
+        cmd: >
+          aws s3 cp
+          {{ backup_dir }}\
+          s3://{{ s3_bucket }}/backups/
+          --recursive
