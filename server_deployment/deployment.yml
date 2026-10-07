@@ -39,6 +39,11 @@ Parameters:
     Default: 10.0.1.0/24
     Description: CIDR block of the public subnet.
   
+  RegionInstanceConnectCidr:
+    Type: String
+    Default: 18.202.216.48/29
+    Description: CIDR block the region uses to connect with EC2 Instance Connect (Default is set to eu-west-1).
+  
 Resources:
   # 1. VPC
   MhfzVPC:
@@ -107,11 +112,17 @@ Resources:
       VpcId: !Ref MhfzVPC
 
       SecurityGroupIngress:
-        # Horrible SSH Solution
+        # Client SSH Connection
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
           CidrIp: !Sub '${AdminIp}/32'
+
+        # EC2 Instance Connect
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Sub RegionInstanceConnectCidr
 
         # MHFZ Sign V1
         - IpProtocol: tcp
